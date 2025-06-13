@@ -1,0 +1,15 @@
+# Automatización Web
+selenium==4.33.0
+
+# BDD Testing Framework
+behave==1.2.6
+
+# Reportes (versión sin dependencias pesadas)
+allure-behave==2.13.5
+
+# Utilidades esenciales
+webdriver-manager==4.0.1
+python-dotenv==1.0.0
+
+# Para manejo de logs
+colorama==0.4.6
