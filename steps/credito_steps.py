@@ -33,33 +33,28 @@ def step_acceder_simulador(context):
     """Navega al simulador de crédito de consumo"""
     print("🔍 Navegando al simulador de crédito...")
     
-    # Intentar navegar al simulador
+    # Paso 1: Buscar y hacer clic en "Simula aquí"
     exito = context.simulador_page.ir_al_simulador()
     
     if not exito:
-        # Si no se puede encontrar automáticamente, intentar URL directa
-        print("⚠️  No se pudo encontrar el simulador automáticamente, intentando URL directa...")
-        simulador_urls = [
-            "https://www.bancoestado.cl/simulador",
-            "https://www.bancoestado.cl/credito-consumo/simulador",
-            "https://www.bancoestado.cl/personas/creditos/simulador"
-        ]
-        
-        for url in simulador_urls:
-            try:
-                print(f"Intentando URL: {url}")
-                context.driver.get(url)
-                time.sleep(3)
-                if context.simulador_page.esta_en_simulador():
-                    print(f"✅ Simulador encontrado en: {url}")
-                    break
-            except Exception as e:
-                print(f"Error con URL {url}: {str(e)}")
-                continue
+        raise AssertionError("No se pudo encontrar o hacer clic en el botón 'Simula aquí'")
     
-    # Verificar que estamos en el simulador
-    time.sleep(2)
+    # Paso 2: Ingresar RUT en el modal
+    print("📝 Ingresando RUT...")
+    exito_rut = context.simulador_page.ingresar_rut("21123191-2")
+    
+    if not exito_rut:
+        raise AssertionError("No se pudo ingresar el RUT")
+    
+    # Paso 3: Hacer clic en Simular (modal RUT)
+    exito_simular_rut = context.simulador_page.hacer_clic_simular_rut()
+    
+    if not exito_simular_rut:
+        raise AssertionError("No se pudo hacer clic en Simular después del RUT")
+    
+    # Tomar screenshot después de acceder
     context.driver_manager.take_screenshot("02_acceso_simulador.png")
+    print("✅ Acceso al simulador completado")
 
 
 @given('que estoy en el simulador de crédito')
@@ -126,16 +121,17 @@ def step_hacer_clic_boton(context, boton):
     print(f"🖱️  Haciendo clic en botón: {boton}")
     
     if boton.lower() == "simular":
-        exito = context.simulador_page.hacer_clic_simular()
+        # En el contexto del formulario, esto sería "Continuar"
+        exito = context.simulador_page.hacer_clic_continuar()
         
         if exito:
-            print("✅ Clic en Simular ejecutado correctamente")
+            print("✅ Clic en Continuar ejecutado correctamente")
             # Esperar a que carguen los resultados
             time.sleep(3)
-            context.driver_manager.take_screenshot("03_despues_simular.png")
+            context.driver_manager.take_screenshot("03_despues_continuar.png")
         else:
-            context.driver_manager.take_screenshot("error_clic_simular.png")
-            raise AssertionError("No se pudo hacer clic en el botón Simular")
+            context.driver_manager.take_screenshot("error_clic_continuar.png")
+            raise AssertionError("No se pudo hacer clic en el botón Continuar")
     else:
         raise NotImplementedError(f"Botón '{boton}' no implementado")
 
