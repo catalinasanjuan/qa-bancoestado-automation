@@ -149,7 +149,7 @@ def step_ver_resultados(context):
     hay_resultados = context.simulador_page.hay_resultados_visibles()
     
     if hay_resultados:
-        print("✅ Resultados de simulación visibles")
+        print(" Resultados de simulación visibles")
         context.resultados = context.simulador_page.obtener_resultados()
         context.driver_manager.take_screenshot("04_resultados_simulacion.png")
     else:

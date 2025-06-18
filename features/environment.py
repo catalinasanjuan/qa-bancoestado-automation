@@ -42,10 +42,10 @@ def after_scenario(context, scenario):
     
     if scenario.status == "passed":
         print(f" Escenario EXITOSO: {scenario.name}")
-        print(f"⏱  Duración: {scenario_duration.total_seconds():.2f} segundos")
+        print(f"  Duración: {scenario_duration.total_seconds():.2f} segundos")
     else:
         print(f" Escenario FALLIDO: {scenario.name}")
-        print(f"⏱  Duración: {scenario_duration.total_seconds():.2f} segundos")
+        print(f"  Duración: {scenario_duration.total_seconds():.2f} segundos")
         
         # Tomar screenshot en caso de fallo
         if hasattr(context, 'driver_manager') and context.driver_manager:

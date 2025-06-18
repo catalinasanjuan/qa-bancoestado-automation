@@ -586,7 +586,7 @@ class SimuladorCreditoPage:
     def obtener_resultados(self):
         """Obtiene los resultados de la simulación"""
         try:
-            print("📊¿ Obteniendo resultados de la simulación...")
+            print("¿ Obteniendo resultados de la simulación...")
             time.sleep(3)
             
             resultados = {}
