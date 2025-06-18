@@ -59,15 +59,15 @@ class SimuladorCreditoPage:
     
     def debug_buscar_elementos(self):
         """Función de debugging para explorar elementos en la página"""
-        print("\n🔍 === INICIANDO DEBUGGING DE ELEMENTOS ===")
+        print("\n === INICIANDO DEBUGGING DE ELEMENTOS ===")
         
         try:
             # 1. Información básica de la página
-            print(f"📄 URL actual: {self.driver.current_url}")
-            print(f"📄 Título: {self.driver.title}")
+            print(f"URL actual: {self.driver.current_url}")
+            print(f"Título: {self.driver.title}")
             
             # 2. Buscar todos los elementos que contengan "simula"
-            print("\n🔍 BUSCANDO ELEMENTOS CON 'SIMULA':")
+            print("\n BUSCANDO ELEMENTOS CON 'SIMULA':")
             elementos_simula = self.driver.find_elements(By.XPATH, "//*[contains(text(), 'simula') or contains(text(), 'Simula')]")
             
             for i, elemento in enumerate(elementos_simula):
@@ -84,7 +84,7 @@ class SimuladorCreditoPage:
                     print(f"     Error obteniendo info: {e}")
             
             # 3. Buscar todos los enlaces (a) y botones (button)
-            print("\n🔍 BUSCANDO TODOS LOS ENLACES Y BOTONES:")
+            print("\n BUSCANDO TODOS LOS ENLACES Y BOTONES:")
             enlaces_botones = self.driver.find_elements(By.XPATH, "//a | //button")
             
             elementos_relevantes = []
@@ -110,7 +110,7 @@ class SimuladorCreditoPage:
                     print(f"     Error: {e}")
             
             # 4. JavaScript para explorar elementos con estilos naranjas
-            print("\n🔍 BUSCANDO ELEMENTOS NARANJAS CON JAVASCRIPT:")
+            print("\n BUSCANDO ELEMENTOS NARANJAS CON JAVASCRIPT:")
             elementos_js = self.driver.execute_script("""
                 var elementos = document.querySelectorAll('*');
                 var resultados = [];
@@ -146,12 +146,12 @@ class SimuladorCreditoPage:
                 print("     ---")
             
             # 5. Buscar elementos por secciones específicas
-            print("\n🔍 BUSCANDO EN SECCIONES ESPECÍFICAS:")
+            print("\n BUSCANDO EN SECCIONES ESPECÍFICAS:")
             
             # Buscar sección de crédito de consumo
             try:
                 seccion_credito = self.driver.find_element(By.XPATH, "//*[contains(text(), 'Crédito de Consumo')]")
-                print("✅ Sección 'Crédito de Consumo' encontrada")
+                print(" Sección 'Crédito de Consumo' encontrada")
                 
                 # Buscar elementos clickeables cerca
                 elementos_cercanos = self.driver.find_elements(By.XPATH, 
@@ -169,19 +169,19 @@ class SimuladorCreditoPage:
                         pass
                         
             except:
-                print("❌ No se encontró sección 'Crédito de Consumo'")
+                print(" No se encontró sección 'Crédito de Consumo'")
             
             # 6. Capturar screenshot para análisis visual
             screenshot_path = "screenshots/debug_elementos_pagina.png"
             self.driver.save_screenshot(screenshot_path)
             print(f"\n📸 Screenshot guardado: {screenshot_path}")
             
-            print("\n🔍 === FIN DEL DEBUGGING ===\n")
+            print("\n === FIN DEL DEBUGGING ===\n")
             
             return elementos_relevantes
             
         except Exception as e:
-            print(f"❌ Error durante debugging: {str(e)}")
+            print(f" Error durante debugging: {str(e)}")
             return []
     def ir_al_simulador(self):
         """Navega al simulador de crédito"""
@@ -198,24 +198,24 @@ class SimuladorCreditoPage:
             try:
                 span_simula = self.driver.find_element(By.XPATH, "//span[contains(text(), 'Simula aquí')]")
                 if span_simula and span_simula.is_displayed():
-                    print("✅ Encontrado span 'Simula aquí'")
+                    print(" Encontrado span 'Simula aquí'")
                     
                     # Buscar el elemento padre clickeable (a o button)
                     try:
                         boton_padre = span_simula.find_element(By.XPATH, "./ancestor::a[1]")
                         if boton_padre:
                             boton_encontrado = boton_padre
-                            print(f"✅ Elemento padre clickeable encontrado: ID='{boton_padre.get_attribute('id')}', Clase='{boton_padre.get_attribute('class')}'")
+                            print(f" Elemento padre clickeable encontrado: ID='{boton_padre.get_attribute('id')}', Clase='{boton_padre.get_attribute('class')}'")
                     except:
                         try:
                             boton_padre = span_simula.find_element(By.XPATH, "./ancestor::button[1]")
                             if boton_padre:
                                 boton_encontrado = boton_padre
-                                print(f"✅ Botón padre encontrado: ID='{boton_padre.get_attribute('id')}'")
+                                print(f" Botón padre encontrado: ID='{boton_padre.get_attribute('id')}'")
                         except:
                             # Si no encuentra padre clickeable, usar el span mismo
                             boton_encontrado = span_simula
-                            print("⚠️ Usando el span directamente")
+                            print(" Usando el span directamente")
             except:
                 print("No se encontró span 'Simula aquí'")
             
@@ -225,7 +225,7 @@ class SimuladorCreditoPage:
                     boton_por_id = self.driver.find_element(By.ID, "button-5689690780")
                     if boton_por_id and boton_por_id.is_displayed():
                         boton_encontrado = boton_por_id
-                        print("✅ Encontrado botón por ID específico")
+                        print(" Encontrado botón por ID específico")
                 except:
                     print("No se encontró botón por ID")
             
@@ -240,7 +240,7 @@ class SimuladorCreditoPage:
                                 texto_cercano = boton.find_element(By.XPATH, ".//span[contains(text(), 'Simula')]")
                                 if texto_cercano:
                                     boton_encontrado = boton
-                                    print(f"✅ Botón msd-button encontrado con texto 'Simula'")
+                                    print(f" Botón msd-button encontrado con texto 'Simula'")
                                     break
                             except:
                                 continue
@@ -284,7 +284,7 @@ class SimuladorCreditoPage:
                     
                     if resultado_js:
                         boton_encontrado = resultado_js
-                        print(f"✅ Botón encontrado por JavaScript")
+                        print(f" Botón encontrado por JavaScript")
                 except Exception as e:
                     print(f"Error en JavaScript: {e}")
             
@@ -298,7 +298,7 @@ class SimuladorCreditoPage:
                 time.sleep(1)
                 
                 # Información del elemento antes de hacer clic
-                print(f"🎯 Haciendo clic en elemento:")
+                print(f" Haciendo clic en elemento:")
                 print(f"   Tag: {boton_encontrado.tag_name}")
                 print(f"   ID: '{boton_encontrado.get_attribute('id')}'")
                 print(f"   Clase: '{boton_encontrado.get_attribute('class')}'")
@@ -308,25 +308,25 @@ class SimuladorCreditoPage:
                 try:
                     # Intentar clic normal primero
                     boton_encontrado.click()
-                    print("✅ Clic normal exitoso")
+                    print(" Clic normal exitoso")
                 except:
                     try:
                         # Si falla, usar JavaScript
                         self.driver.execute_script("arguments[0].click();", boton_encontrado)
-                        print("✅ Clic JavaScript exitoso")
+                        print(" Clic JavaScript exitoso")
                     except:
-                        print("❌ No se pudo hacer clic en el elemento")
+                        print(" No se pudo hacer clic en el elemento")
                         return False
                 
                 time.sleep(5)  # Esperar a que cargue
                 
                 # Verificar si cambió la URL o apareció un modal
                 nueva_url = self.driver.current_url
-                print(f"🌐 URL después del clic: {nueva_url}")
+                print(f" URL después del clic: {nueva_url}")
                 
                 return True
             else:
-                print("❌ No se encontró ningún elemento clickeable")
+                print(" No se encontró ningún elemento clickeable")
                 return False
                 
         except Exception as e:
@@ -361,11 +361,11 @@ class SimuladorCreditoPage:
             if campo_rut:
                 campo_rut.clear()
                 campo_rut.send_keys(rut)
-                print(f"✅ RUT {rut} ingresado correctamente")
+                print(f" RUT {rut} ingresado correctamente")
                 time.sleep(1)
                 return True
             else:
-                print("❌ No se encontró el campo de RUT")
+                print(" No se encontró el campo de RUT")
                 return False
                 
         except Exception as e:
@@ -399,11 +399,11 @@ class SimuladorCreditoPage:
                 except:
                     self.driver.execute_script("arguments[0].click();", boton_simular)
                 
-                print("✅ Clic en Simular (RUT) exitoso")
+                print(" Clic en Simular (RUT) exitoso")
                 time.sleep(3)
                 return True
             else:
-                print("❌ No se encontró el botón Simular")
+                print(" No se encontró el botón Simular")
                 return False
                 
         except Exception as e:
@@ -461,26 +461,23 @@ class SimuladorCreditoPage:
                 time.sleep(0.5)
                 campo_monto.send_keys(monto_limpio)
                 time.sleep(1)
-                print(f"✅ Monto ${monto_limpio} ingresado correctamente")
+                print(f" Monto ${monto_limpio} ingresado correctamente")
                 return True
             else:
-                print("❌ No se encontró el campo de monto")
+                print(" No se encontró el campo de monto")
                 return False
                 
         except Exception as e:
             print(f"Error al ingresar monto: {str(e)}")
             return False
     
-    
-    
-    
-    
+
     
     def seleccionar_cuotas(self, cuotas):
         """Selecciona el número de cuotas desde un <select> nativo con espera robusta"""
         try:
             cuotas_str = str(cuotas)
-            print(f"📅 Seleccionando {cuotas_str} cuotas")
+            print(f" Seleccionando {cuotas_str} cuotas")
 
             # Esperar a que el <select> esté presente y visible
             select_elem = self.wait.until(EC.presence_of_element_located(
@@ -496,17 +493,17 @@ class SimuladorCreditoPage:
                 select = Select(select_elem)
                 select.select_by_value(cuotas_str)
             except UnexpectedTagNameException:
-                print("⚠️ Elemento no es un <select>. ¿Framework JS lo cambió?")
+                print(" Elemento no es un <select>. ¿Framework JS lo cambió?")
                 return False
             except ElementNotInteractableException as e:
-                print(f"⚠️ Elemento no interactuable: {e}")
+                print(f" Elemento no interactuable: {e}")
                 return False
 
-            print(f"✅ Cuotas {cuotas_str} seleccionadas correctamente")
+            print(f" Cuotas {cuotas_str} seleccionadas correctamente")
             return True
 
         except Exception as e:
-            print(f"❌ Error inesperado al seleccionar cuotas: {e}")
+            print(f" Error inesperado al seleccionar cuotas: {e}")
             self.driver.save_screenshot("screenshots/error_cuotas_dropdown.png")
             return False
    
@@ -514,30 +511,30 @@ class SimuladorCreditoPage:
     def completar_campos_obligatorios(self):
         """Completa los campos requeridos para habilitar el botón Continuar"""
         try:
-            print("📆 Seleccionando mes: Agosto")
+            print(" Seleccionando mes: Agosto")
             select_mes = self.wait.until(EC.presence_of_element_located(
                 (By.XPATH, "//select[@formcontrolname='mesPago']")
             ))
             Select(select_mes).select_by_visible_text("Agosto")
 
-            print("📆 Seleccionando día: 7")
+            print(" Seleccionando día: 7")
             select_dia = self.wait.until(EC.presence_of_element_located(
                 (By.XPATH, "//select[@formcontrolname='diaPago']")
             ))
             Select(select_dia).select_by_visible_text("7")
 
-            print("🛡️ Seleccionando seguro: Desgravamen")
+            print(" Seleccionando seguro: Desgravamen")
             radio_seguro = self.wait.until(EC.element_to_be_clickable(
                 (By.XPATH, "//input[@type='radio' and @value='14IV']")
             ))
             self.driver.execute_script("arguments[0].click();", radio_seguro)  # JS click por robustez
 
             time.sleep(1)
-            print("✅ Campos obligatorios completados")
+            print(" Campos obligatorios completados")
             return True
 
         except Exception as e:
-            print(f"❌ Error al completar campos obligatorios: {e}")
+            print(f" Error al completar campos obligatorios: {e}")
             self.driver.save_screenshot("screenshots/error_campos_obligatorios.png")
             raise AssertionError("Error al seleccionar mes")  # para Behave
 
@@ -575,11 +572,11 @@ class SimuladorCreditoPage:
                 except:
                     self.driver.execute_script("arguments[0].click();", boton_continuar)
                 
-                print("✅ Clic en Continuar exitoso")
+                print(" Clic en Continuar exitoso")
                 time.sleep(3)
                 return True
             else:
-                print("❌ No se encontró el botón Continuar")
+                print(" No se encontró el botón Continuar")
                 return False
                 
         except Exception as e:
@@ -589,7 +586,7 @@ class SimuladorCreditoPage:
     def obtener_resultados(self):
         """Obtiene los resultados de la simulación"""
         try:
-            print("📊 Obteniendo resultados de la simulación...")
+            print("📊¿ Obteniendo resultados de la simulación...")
             time.sleep(3)
             
             resultados = {}
@@ -600,7 +597,7 @@ class SimuladorCreditoPage:
                 cuota_element = self.driver.find_element(By.XPATH, "//*[contains(text(), '$93.525') or contains(text(), 'Valor cuota')]")
                 if cuota_element:
                     resultados['cuota_mensual'] = cuota_element.text
-                    print(f"✅ Cuota encontrada: {cuota_element.text}")
+                    print(f" Cuota encontrada: {cuota_element.text}")
             except:
                 pass
             
@@ -609,7 +606,7 @@ class SimuladorCreditoPage:
                 cae_element = self.driver.find_element(By.XPATH, "//*[contains(text(), '32.88%') or contains(text(), 'CAE')]")
                 if cae_element:
                     resultados['tasa_cae'] = cae_element.text
-                    print(f"✅ CAE encontrada: {cae_element.text}")
+                    print(f" CAE encontrada: {cae_element.text}")
             except:
                 pass
             
@@ -618,7 +615,7 @@ class SimuladorCreditoPage:
                 total_element = self.driver.find_element(By.XPATH, "//*[contains(text(), '$935.249') or contains(text(), 'Costo Total')]")
                 if total_element:
                     resultados['costo_total'] = total_element.text
-                    print(f"✅ Costo total encontrado: {total_element.text}")
+                    print(f" Costo total encontrado: {total_element.text}")
             except:
                 pass
             
@@ -627,7 +624,7 @@ class SimuladorCreditoPage:
                 texto_pagina = self.driver.page_source
                 if any(indicador in texto_pagina for indicador in ['$93.525', '32.88%', '$935.249', 'Valor cuota', 'CAE']):
                     resultados['simulacion_exitosa'] = True
-                    print("✅ Resultados detectados en la página")
+                    print(" Resultados detectados en la página")
             
             return resultados
             
