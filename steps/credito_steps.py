@@ -125,23 +125,17 @@ def step_completar_campos_obligatorios(context):
 
 @when('hago clic en el botón "{boton}"')
 def step_hacer_clic_boton(context, boton):
-    """Hace clic en el botón especificado"""
     print(f"🖱️  Haciendo clic en botón: {boton}")
-    
+
     if boton.lower() == "simular":
-        # En el contexto del formulario, esto sería "Continuar"
+        context.simulador_page.hacer_clic_simular_rut()
+    elif boton.lower() == "continuar":
         exito = context.simulador_page.hacer_clic_continuar()
-        
-        if exito:
-            print("✅ Clic en Continuar ejecutado correctamente")
-            # Esperar a que carguen los resultados
-            time.sleep(3)
-            context.driver_manager.take_screenshot("03_despues_continuar.png")
-        else:
-            context.driver_manager.take_screenshot("error_clic_continuar.png")
-            raise AssertionError("No se pudo hacer clic en el botón Continuar")
+        if not exito:
+            raise AssertionError("❌ No se pudo hacer clic en el botón Continuar")
     else:
         raise NotImplementedError(f"Botón '{boton}' no implementado")
+
 
 
 @then('debería ver los resultados de la simulación')
