@@ -113,6 +113,14 @@ def step_seleccionar_cuotas(context, cuotas):
     else:
         context.driver_manager.take_screenshot("error_seleccion_cuotas.png")
         raise AssertionError(f"No se pudieron seleccionar {cuotas} cuotas")
+    
+@when("completo los campos obligatorios del simulador")
+def step_completar_campos_obligatorios(context):
+    try:
+        context.simulador_page.completar_campos_obligatorios()
+    except Exception as e:
+        context.driver_manager.take_screenshot("error_campos_obligatorios.png")
+        raise AssertionError(f"❌ Falló completar campos obligatorios: {e}")
 
 
 @when('hago clic en el botón "{boton}"')

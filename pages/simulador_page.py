@@ -7,6 +7,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.webdriver.support.ui import Select
+from selenium.common.exceptions import ElementNotInteractableException, UnexpectedTagNameException
+
 import time
 import re
 
@@ -468,61 +471,78 @@ class SimuladorCreditoPage:
             print(f"Error al ingresar monto: {str(e)}")
             return False
     
+    
+    
+    
+    
+    
     def seleccionar_cuotas(self, cuotas):
-        """Selecciona el número de cuotas"""
+        """Selecciona el número de cuotas desde un <select> nativo con espera robusta"""
         try:
             cuotas_str = str(cuotas)
-            print(f"Seleccionando {cuotas_str} cuotas")
-            
-            # Buscar el dropdown de cuotas
-            dropdown_cuotas = None
-            selectores = [
-                (By.XPATH, "//select[contains(@name, 'cuota')]"),
-                (By.XPATH, "//select[contains(@id, 'cuota')]"),
-                (By.XPATH, "//select")
-            ]
-            
-            for selector in selectores:
-                try:
-                    elementos = self.driver.find_elements(*selector)
-                    for elemento in elementos:
-                        if elemento.is_displayed():
-                            # Verificar si es el dropdown correcto
-                            opciones = elemento.find_elements(By.TAG_NAME, "option")
-                            if any(cuotas_str in opcion.text for opcion in opciones):
-                                dropdown_cuotas = elemento
-                                break
-                    if dropdown_cuotas:
-                        break
-                except:
-                    continue
-            
-            if dropdown_cuotas:
-                select = Select(dropdown_cuotas)
-                
-                # Intentar seleccionar por valor o texto
-                try:
-                    select.select_by_value(cuotas_str)
-                except:
-                    try:
-                        select.select_by_visible_text(cuotas_str)
-                    except:
-                        # Buscar la opción que contenga el número
-                        for opcion in select.options:
-                            if cuotas_str in opcion.text:
-                                opcion.click()
-                                break
-                
-                time.sleep(1)
-                print(f"✅ Cuotas {cuotas_str} seleccionadas correctamente")
-                return True
-            else:
-                print("❌ No se encontró el dropdown de cuotas")
+            print(f"📅 Seleccionando {cuotas_str} cuotas")
+
+            # Esperar a que el <select> esté presente y visible
+            select_elem = self.wait.until(EC.presence_of_element_located(
+                (By.XPATH, "//select[contains(@formcontrolname, 'numeroCuotas')]")
+            ))
+
+            self.wait.until(EC.element_to_be_clickable((By.XPATH, "//select[contains(@formcontrolname, 'numeroCuotas')]")))
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", select_elem)
+            time.sleep(1)
+
+            # Seleccionar usando Select de Selenium
+            try:
+                select = Select(select_elem)
+                select.select_by_value(cuotas_str)
+            except UnexpectedTagNameException:
+                print("⚠️ Elemento no es un <select>. ¿Framework JS lo cambió?")
                 return False
-                
+            except ElementNotInteractableException as e:
+                print(f"⚠️ Elemento no interactuable: {e}")
+                return False
+
+            print(f"✅ Cuotas {cuotas_str} seleccionadas correctamente")
+            return True
+
         except Exception as e:
-            print(f"Error al seleccionar cuotas: {str(e)}")
+            print(f"❌ Error inesperado al seleccionar cuotas: {e}")
+            self.driver.save_screenshot("screenshots/error_cuotas_dropdown.png")
             return False
+   
+   
+    def completar_campos_obligatorios(self):
+        """Completa los campos requeridos para habilitar el botón Continuar"""
+        try:
+            print("📆 Seleccionando mes: Agosto")
+            select_mes = self.wait.until(EC.presence_of_element_located(
+                (By.XPATH, "//select[@formcontrolname='mesPago']")
+            ))
+            Select(select_mes).select_by_visible_text("Agosto")
+
+            print("📆 Seleccionando día: 7")
+            select_dia = self.wait.until(EC.presence_of_element_located(
+                (By.XPATH, "//select[@formcontrolname='diaPago']")
+            ))
+            Select(select_dia).select_by_visible_text("7")
+
+            print("🛡️ Seleccionando seguro: Desgravamen")
+            radio_seguro = self.wait.until(EC.element_to_be_clickable(
+                (By.XPATH, "//input[@type='radio' and @value='14IV']")
+            ))
+            self.driver.execute_script("arguments[0].click();", radio_seguro)  # JS click por robustez
+
+            time.sleep(1)
+            print("✅ Campos obligatorios completados")
+            return True
+
+        except Exception as e:
+            print(f"❌ Error al completar campos obligatorios: {e}")
+            self.driver.save_screenshot("screenshots/error_campos_obligatorios.png")
+            raise AssertionError("Error al seleccionar mes")  # para Behave
+
+
+
     
     def hacer_clic_continuar(self):
         """Hace clic en el botón Continuar del formulario"""

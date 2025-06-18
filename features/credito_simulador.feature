@@ -14,7 +14,8 @@ Característica: Simulador de Crédito de Consumo BancoEstado
     Dado que estoy en el simulador de crédito
     Cuando ingreso un monto de "$5000000"
     Y selecciono "48" cuotas
-    Y hago clic en el botón "Simular"
+     Y completo los campos obligatorios del simulador
+    Y hago clic en el botón "Continuar"
     Entonces debería ver los resultados de la simulación
     Y debería mostrar el valor de la cuota mensual
     Y debería mostrar la tasa CAE
