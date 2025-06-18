@@ -1,0 +1,96 @@
+#  Automatización QA - Simulador de Crédito BancoEstado
+
+Proyecto de automatización de pruebas en el simulador de crédito de BancoEstado usando **Python**, **Selenium**, **Behave**, **Allure** y **Jenkins**.
+
+---
+
+## Requisitos Previos
+
+- Python 3.12+
+- Google Chrome
+- ChromeDriver (usado vía `webdriver-manager`)
+- Git
+- Java 8+
+- Jenkins
+- Allure (instalado vía Scoop)
+
+---
+
+## Instalación del Entorno
+1. Clona el proyecto
+
+
+git clone https://github.com/catalinasanjuan/qa-bancoestado-automation.git
+cd qa-bancoestado-automation
+
+2. Instala dependencias
+
+pip install -r requirements.txt
+Asegúrate de tener behave, selenium, webdriver-manager, allure-behave, etc.
+
+Estructura del Proyecto
+
+qa-bancoestado-automation/
+├── features/
+│   ├── credito_simulador.feature
+│   └── steps/
+│       └── credito_steps.py
+├── screenshots/
+├── allure-results/
+└── ...
+
+Ejecutar Test con Behave
+Ejecutar solo los 3 escenarios principales:
+
+behave --tags=@simulador_credito
+
+Generar reportes para Allure:
+behave -f allure_behave.formatter:AllureFormatter -o allure-results
+
+Ver Reporte Allure
+1. Instala Allure.
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+iwr -useb get.scoop.sh | iex
+
+scoop install allure
+
+2. Ver reporte:
+allure serve allure-results
+Configuración Jenkins
+Instala Jenkins (usamos .war):
+
+java -jar jenkins.war
+
+En el navegador ve a:
+
+http://localhost:8080
+
+Sigue el wizard inicial:
+Usa plugins sugeridos
+Crea tu usuario admin
+Deja la URL por defecto: http://localhost:8080/
+Crea un nuevo proyecto freestyle:
+Configura el repositorio Git: https://github.com/catalinasanjuan/qa-bancoestado-automation.git
+
+
+En la sección Build, usa este comando:
+
+behave -f allure_behave.formatter:AllureFormatter -o allure-results
+Opcional: Generar reporte con Allure post build
+
+Instala el plugin "Allure Jenkins Plugin"
+
+En “Post-build Actions”, selecciona “Allure Report” y apunta a allure-results
+
+Escenarios Cubiertos
+@smoke
+Simulación exitosa de crédito de consumo con valores válidos
+
+@regresion
+Simulación con monto mínimo permitido
+
+@error_handling
+Validación de campos obligatorios
+
+Evidencia
+Los screenshots en caso de fallos se guardan en la carpeta screenshots/.
